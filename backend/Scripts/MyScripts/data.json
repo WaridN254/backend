@@ -1,0 +1,20 @@
+[
+    {
+        "state-province": "Makerere University",
+        "alpha_two_code": "IN",
+        "domains": [ "saec.ac.in" ],
+        "name": "Law School",
+        "country": "Uganda",
+        "web_pages": [ "https://www.makerere/" ]
+    },
+    {
+        "state-province": "Isbat City Campus",
+        "alpha_two_code": "IN",
+        "domains": [ "isbat" ],
+        "name": "IT Campus",
+        "country": "Uganda",
+        "web_pages": [ "https://www.isbat/" ]
+    }
+
+]
+  

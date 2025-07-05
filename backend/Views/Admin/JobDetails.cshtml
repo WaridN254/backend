@@ -1,0 +1,119 @@
+﻿@model backend.Models.JobDetails
+
+@{
+    ViewBag.Title = "Job Details";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5><i class="fas fa-info-circle"></i> Job Details</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Job Summary -->
+                <div class="col-md-8">
+                    <h3 class="fw-bold">@Model.JobTitle</h3>
+                    <p class="text-muted"><i class="fas fa-building"></i> @Model.CompanyName</p>
+
+                    <div class="d-flex align-items-center mt-3">
+                        <div class="me-4">
+                            <a href="@Url.Action("JobViews","Admin", new { id = Model.JobID })" class="btn btn-outline-secondary">
+                                <i class="fas fa-eye"></i> Views <span class="badge bg-secondary">@Model.NumberOfViews</span>
+                            </a>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-primary">
+                                <i class="fas fa-users"></i> Applicants <span class="badge bg-primary">@Model.NumberOfApplications</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h5 class="mt-4"><i class="fas fa-file-alt"></i> Description</h5>
+                    <p class="text-justify">@Html.Raw(Model.Description.Replace(Environment.NewLine, "<br />"))</p>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-tags"></i> Category</h6>
+                            <p>@Model.CategoryName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-map-marker-alt"></i> Location</h6>
+                            <p>@Model.Location</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-dollar-sign"></i> Salary</h6>
+                            <p>@Model.Salary</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-calendar-alt"></i> Application Deadline</h6>
+                            <p>@Model.ApplicationDeadline.ToString("yyyy-MM-dd")</p>
+                        </div>
+                    </div>
+
+                    <h6><i class="fas fa-briefcase"></i> Employment Type</h6>
+                    <p>@Model.EmploymentType</p>
+                </div>
+
+                <!-- Employer Details -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <img alt="Company Logo" src="data:image/png;base64,@Convert.ToBase64String(Model.CompanyLogo)"
+                                 class="rounded-circle mb-2" width="80px" height="80px" />
+                            <h4 class="fw-bold"><i class="fa fa-building"></i> @Model.CompanyName</h4>
+                        </div>
+                        <div class="card-body">
+                            <h6><i class="fas fa-envelope"></i> Official Email</h6>
+                            <p>@Model.OfficialEmail</p>
+
+                            <h6><i class="fas fa-globe"></i> Website</h6>
+                            <p><a href="@Model.Website" target="_blank">@Model.Website</a></p>
+
+                            <h6><i class="fas fa-user-tie"></i> Employer Name</h6>
+                            <p>@Model.EmployerName, @Model.Designation</p>
+
+                            <h6><i class="fas fa-phone"></i> Contact Number</h6>
+                            <p>@Model.ContactPhone</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="card-footer text-end">
+            <a href="@Url.Action("Jobs", "Admin")" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Jobs
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    .container {
+        max-width: 1200px;
+    }
+
+    .card {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .text-justify {
+        text-align: justify;
+    }
+
+    .fw-bold {
+        font-weight: bold;
+    }
+</style>

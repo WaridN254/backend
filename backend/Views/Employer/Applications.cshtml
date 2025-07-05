@@ -1,0 +1,278 @@
+﻿@model IEnumerable<backend.Models.JobApplication>
+
+@{
+    ViewBag.Title = "Applications";
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Job Finder</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="position: fixed; top: 0; width: 100%; z-index: 1000;">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", "Employer")">
+                <i class="fas fa-briefcase me-2"></i>Job Finder
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Vacancies", "Employer")">Browse Jobs</a>
+                    </li>
+
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+
+                            <li><span class="dropdown-item text-muted">No notifications</span></li>
+
+                            <li>
+                                <a class="dropdown-item" href="">
+                                    <small class="text-muted"></small>
+
+                                </a>
+                            </li>
+
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-center" href="/">View All</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+
+                            <li><a class="dropdown-item" href="@Url.Action("ViewProfile", "Employer")"><i class="fas fa-user me-2"></i>Company Profile</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("ChatList", "Employer")"><i class="fas fa-envelope me-2"></i>Messages</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("Vacancies", "Employer")"><i class="fas fa-list me-2"></i>Posted Jobs</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("AddJobVacancy", "Employer")"><i class="fas fa-plus me-2"></i>Add Jobs</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "Employer")"><i class="fas fa-cog me-2"></i>Account Settings</a></li>
+                            <li><a class="dropdown-item" id="Logoutbtn" href="@Url.Action("Logout", "Employer")"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <p>.</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <!-- Main Content -->
+    <!-- Your employer dashboard content goes here -->
+    <!-- Page Content -->
+    <div class="container mt-8">
+        <div class="dashboard-header text-center">
+            <h5><i class="fas fa-user-tie me-2"></i>Welcome, @Session["EmployerUsername"]</h5>
+        </div>
+        <div class="card">
+
+            <div class="card-body">
+                <!-- Filters -->
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-2">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search by applicant name..." />
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <select id="statusFilter" class="form-control">
+                            <option value="">All Statuses</option>
+                            <option value="Read">Read</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Rejected">Rejected</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Applications Table -->
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped align-middle text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Application ID</th>
+                                <th>Applicant Name</th>
+                                <th>Date Applied</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr class="application-row" data-name="@item.SeekerName.ToLower()" data-status="@item.Status.ToLower()">
+                                    <td>@item.JobApplicationID</td>
+                                    <td>@item.SeekerName</td>
+                                    <td>@item.ApplicationDate.ToShortDateString()</td>
+                                    <td>
+                                        <span class="badge bg-@(
+                                    item.Status == "Approved" ? "success" :
+                                    item.Status == "Rejected" ? "danger" :
+                                    item.Status == "Pending" ? "warning text-dark" :
+                                    "secondary")">
+                                            @item.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2 job-item" data-job-id="@item.JobApplicationID">
+                                            <a href="@Url.Action("JobSeekerProfile", "Employer", new { id = item.SeekerId })" class="btn btn-outline-primary btn-sm job-link">
+                                                <i class="fas fa-user-circle"></i> View Profile
+                                            </a>
+                                            <a href="@Url.Action("ApplicationApprove", "Employer", new { id = item.JobApplicationID, aid = item.JobId })" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check-circle"></i> Approve
+                                            </a>
+                                            <a href="@Url.Action("ApplicationReject", "Employer", new { id = item.JobApplicationID, aid = item.JobId })" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times-circle"></i> Reject
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>.</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p>.</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+    <p>.</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p>.</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p>.</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p>.</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p>.</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p>.</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <!-- Footer -->
+    <footer class="py-4 bg-dark text-white" style="bottom:0px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="mb-3">Job Finder</h5>
+                    <p>Find your dream job or the perfect candidate with our comprehensive job portal.</p>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+
+                <div class="col-md-2">
+                    <h5 class="mb-3">Contact</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i>Bukasa Kirinya</li>
+                        <li><i class="fas fa-phone me-2"></i> 0701023913</li>
+                        <li><i class="fas fa-envelope me-2"></i> info@jobfinder.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; <?= date('Y') ?> Job Finder. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item"><a href="terms.php" class="text-white text-decoration-none">Terms of Service</a></li>
+                        <li class="list-inline-item"><a href="privacy.php" class="text-white text-decoration-none">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Scripts -->
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="~/js/main.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    @section Scripts {
+        <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // Mark as read & redirect
+                $(".job-link").click(function (e) {
+                    e.preventDefault();
+                    var jobId = $(this).closest(".job-item").data("job-id");
+                    var redirectUrl = $(this).attr("href");
+
+                    $.get("/Employer/ApplicationRead/" + jobId)
+                        .always(function () {
+                            window.location.href = redirectUrl;
+                        });
+                });
+
+                // Filter Logic
+                function filterTable() {
+                    var searchValue = $("#searchInput").val().toLowerCase();
+                    var statusValue = $("#statusFilter").val().toLowerCase();
+
+                    $(".application-row").each(function () {
+                        var name = $(this).data("name");
+                        var status = $(this).data("status");
+
+                        var matchesSearch = name.includes(searchValue);
+                        var matchesStatus = !statusValue || status === statusValue;
+
+                        $(this).toggle(matchesSearch && matchesStatus);
+                    });
+                }
+
+                $("#searchInput, #statusFilter").on("input change", filterTable);
+            });
+        </script>
+    }
+
+
+    <script>
+        // Toggle Sidebar on small screens
+        document.getElementById("toggleSidebar")?.addEventListener("click", function () {
+            document.querySelector(".sidebar")?.classList.toggle("active");
+        });
+    </script>
+    <!-- Page Content -->
+    </div>
+
+    <!-- Body -->
+
+
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script>
+        $("#toggleSidebar").on("click", function () {
+            $(".sidebar").toggleClass("d-none");
+        });
+    </script>
+
+
+
+
+</body>
+</html>

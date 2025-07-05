@@ -1,0 +1,316 @@
+﻿@model IEnumerable<backend.Models.ChatMessage>
+
+@{
+    ViewBag.Title = "Chat with Employer";
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Job Finder</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="position: fixed; top: 0; width: 100%; z-index: 1000;">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", "JobSeeker")">
+                <i class="fas fa-briefcase me-2"></i>Job Finder
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("jobs", "JobSeeker")">Browse Jobs</a>
+                    </li>
+
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+
+                            <li><span class="dropdown-item text-muted">No notifications</span></li>
+
+                            <li>
+                                <a class="dropdown-item" href="">
+                                    <small class="text-muted"></small>
+
+                                </a>
+                            </li>
+
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-center" href="/">View All</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+
+                            <li><a class="dropdown-item" href="@Url.Action("JobSeekerProfile", "JobSeeker")"><i class="fas fa-user me-2"></i>My Profile</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("ChatList", "JobSeeker")"><i class="fas fa-comments text-success"></i>Chats</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("AppliedJobs", "JobSeeker")"><i class="fas fa-file-alt me-2"></i>My Applications</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("Bookmarks", "JobSeeker")"><i class="fas fa-bookmark me-2"></i>Bookmarked Jobs</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "JobSeeker")"><i class="fas fa-cog me-2"></i>Account Settings</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("Logout", "JobSeeker")"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <div class="container mt-7" style="margin-top:70px;">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="chat-container card shadow-sm">
+                    <!-- Chat Header -->
+                    <div class="chat-header d-flex align-items-center justify-content-between p-3">
+                        <div class="d-flex align-items-center">
+                            <div class="profile-pic">@Model.First().CompanyName[0]</div>
+                            <h5 class="ms-2">@Model.First().CompanyName</h5>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-primary btn-sm me-2"><i class="fas fa-phone"></i></button>
+                            <button class="btn btn-outline-danger btn-sm"><i class="fas fa-video"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Chat Messages -->
+                    <div class="chat-body p-3" id="messageBody">
+                        @foreach (var message in Model)
+                        {
+                            if (message.Sender == 'E')
+                            {
+                                <!-- Receiver Message -->
+                                <div class="chat-message chat-received">
+                                    <div class="message-content">@Html.Raw(message.Message.Replace(Environment.NewLine, "<br />"))</div>
+                                    <div class="message-time">@message.DateAndTime</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <!-- Sender Message -->
+                                <div class="chat-message chat-sent">
+                                    <div class="message-content">@Html.Raw(message.Message.Replace(Environment.NewLine, "<br />"))</div>
+                                    <div class="message-time">@message.DateAndTime</div>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <!-- Chat Input Box -->
+                    <div class="chat-footer p-3 d-flex align-items-center">
+                        <button class="btn btn-light btn-sm me-2"><i class="fas fa-paperclip"></i></button>
+                        <textarea class="form-control me-2" id="Message" rows="1" placeholder="Type a message..."></textarea>
+                        <button class="btn btn-primary btn-sm" id="sendButton"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="py-4 bg-dark text-white" style="bottom:0px; width:100%; position:absolute;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="mb-3">Job Finder</h5>
+                    <p>Find your dream job or the perfect candidate with our comprehensive job portal.</p>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+
+                <div class="col-md-2">
+                    <h5 class="mb-3">Contact</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i>Bukasa Kirinya</li>
+                        <li><i class="fas fa-phone me-2"></i> 0701023913</li>
+                        <li><i class="fas fa-envelope me-2"></i> info@jobfinder.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; <?= date('Y') ?> Job Finder. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item"><a href="terms.php" class="text-white text-decoration-none">Terms of Service</a></li>
+                        <li class="list-inline-item"><a href="privacy.php" class="text-white text-decoration-none">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../assets/js/main.js"></script>
+    <!-- Scripts -->
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="~/js/main.js"></script>
+    <!-- jQuery -->
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        var messageBody = document.querySelector('#messageBody');
+        messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
+
+        $("#sendButton").on("click", function () {
+            var id = @Model.First().EmployerID;
+            var message = $("#Message").val();
+            if (message != "") {
+                sendMessageToController(id, message);
+            }
+        });
+    });
+
+    function sendMessageToController(id, message) {
+        var data = {
+            id: id,
+            message: message
+        };
+        $.ajax({
+            url: "@Url.Action("SendMessage","JobSeeker")",
+            type: "POST",
+            data: data,
+            success: function (response) {
+                console.log("Message sent successfully.");
+                window.location.reload();
+            },
+            error: function (error) {
+                console.error("Error sending message: " + error.statusText);
+            }
+        });
+    }
+    </script>
+
+    <!-- Custom Styles -->
+    <style>
+        /* Chat Container */
+        .chat-container {
+            border-radius: 12px;
+            overflow: hidden;
+            max-height: 75vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Chat Header */
+        .chat-header {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+            border-radius: 12px 12px 0 0;
+        }
+
+        /* Profile Picture */
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            background: white;
+            color: #007bff;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        /* Chat Body */
+        .chat-body {
+            overflow-y: auto;
+            flex-grow: 1;
+            background: #f8f9fa;
+            padding-bottom: 15px;
+            max-height: 400px;
+        }
+
+        /* Chat Messages */
+        .chat-message {
+            max-width: 75%;
+            padding: 10px;
+            margin: 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .chat-received {
+            background: #e9ecef;
+            align-self: flex-start;
+        }
+
+        .chat-sent {
+            background: #007bff;
+            color: white;
+            align-self: flex-end;
+            text-align: right;
+        }
+
+        /* Message Time */
+        .message-time {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        /* Chat Footer */
+        .chat-footer {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Dark Mode Support */
+        .dark-mode .chat-body {
+            background: #222;
+        }
+
+        .dark-mode .chat-received {
+            background: #444;
+            color: white;
+        }
+
+        .dark-mode .chat-sent {
+            background: #007bff;
+            color: white;
+        }
+
+        .dark-mode .chat-footer {
+            background: #333;
+        }
+    </style>
+
+</body>
+</html>

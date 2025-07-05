@@ -1,0 +1,357 @@
+﻿@model backend.Models.JobSeekerProfile
+
+@{
+    ViewBag.Title = "Profile";
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Job Finder</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="position: fixed; top: 0; width: 100%; z-index: 1000;">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", "JobSeeker")">
+                <i class="fas fa-briefcase me-2"></i>Job Finder
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("jobs", "JobSeeker")">Browse Jobs</a>
+                    </li>
+
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+
+                            <li><span class="dropdown-item text-muted">No notifications</span></li>
+
+                            <li>
+                                <a class="dropdown-item" href="">
+                                    <small class="text-muted"></small>
+
+                                </a>
+                            </li>
+
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-center" href="/">View All</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+
+                            <li><a class="dropdown-item" href="@Url.Action("JobSeekerProfile", "JobSeeker")"><i class="fas fa-user me-2"></i>My Profile</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("ChatList", "JobSeeker")"><i class="fas fa-envelope me-2"></i>Messages</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("AppliedJobs", "JobSeeker")"><i class="fas fa-file-alt me-2"></i>My Applications</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("Bookmarks", "JobSeeker")"><i class="fas fa-bookmark me-2"></i>Bookmarked Jobs</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "JobSeeker")"><i class="fas fa-cog me-2"></i>Account Settings</a></li>
+
+                            <li>
+                                <a class="dropdown-item" name="logoutBtn" id="Logoutbtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="logoutMessage" class="mt-3"></div>
+    <p>.</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.getElementById("Logoutbtn").addEventListener("click", function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You will be logged out from your account.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Logout',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/JobSeeker/Logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                            // Include CSRF token here if needed
+                            // 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        }
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Logged Out',
+                                    text: 'You have been logged out successfully.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+
+                                setTimeout(() => window.location.href = '/', 2000);
+                            } else {
+                                throw new Error('Logout failed');
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong while logging out!',
+                            });
+                        });
+                }
+            });
+        });
+    </script>
+
+    <div class="container mt-4" style="margin-top:50%;">
+        <!-- Profile Header -->
+        <div class="card profile-header text-center shadow-sm">
+            <img alt="Profile Picture" src="data:jpg/png;base64,@Convert.ToBase64String(Model.JobSeekerDetails.Image)" class="rounded-circle profile-pic">
+            <h4 class="mt-2">
+                @Model.JobSeekerDetails.FirstName @Model.JobSeekerDetails.LastName
+                <a href="@Url.Action("UpdateProfile")" title="Edit profile"><i class="fa fa-edit"></i></a>
+            </h4>
+            <h6 class="text-muted">@Model.JobSeekerDetails.Username</h6>
+        </div>
+
+        <div class="row mt-4">
+            <!-- Left Column -->
+            <div class="col-md-8">
+                <!-- Personal Details -->
+                <div class="card p-3 shadow-sm">
+                    <h4><i class="fas fa-user"></i> Personal Details</h4>
+                    <dl class="row mt-2">
+                        <dt class="col-sm-4">First Name:</dt>
+                        <dd class="col-sm-8">@Model.JobSeekerDetails.FirstName</dd>
+                        <dt class="col-sm-4">Last Name:</dt>
+                        <dd class="col-sm-8">@Model.JobSeekerDetails.LastName</dd>
+                        <dt class="col-sm-4">Email:</dt>
+                        <dd class="col-sm-8">@Model.JobSeekerDetails.Email</dd>
+                        <dt class="col-sm-4">Gender:</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.JobSeekerDetails.Gender == "M")
+                            {<text>Male</text> }
+                        else if (Model.JobSeekerDetails.Gender == "F")
+                        { <text>Female</text> }
+                    else
+                    { <text>Other</text>}
+                        </dd>
+                        <dt class="col-sm-4">Birthdate:</dt>
+                        <dd class="col-sm-8">@Model.JobSeekerDetails.Birthdate.ToString("yyyy/MM/dd")</dd>
+                        <dt class="col-sm-4">Phone:</dt>
+                        <dd class="col-sm-8">@Model.JobSeekerDetails.PhoneNumber</dd>
+                        <dt class="col-sm-4">Experience:</dt>
+                        <dd class="col-sm-8">@Model.JobSeekerDetails.Experience Years</dd>
+                        <dt class="col-sm-4">Address:</dt>
+                        <dd class="col-sm-8">@Model.JobSeekerDetails.Address, @Model.JobSeekerDetails.City, @Model.JobSeekerDetails.State</dd>
+                    </dl>
+                </div>
+
+                <!-- Education Section -->
+                <div class="card p-3 shadow-sm mt-3">
+                    <h4><i class="fas fa-graduation-cap"></i> Education</h4>
+                    <button class="btn btn-outline-primary" id="showEducationForm"><i class="fa fa-plus"></i> Add Education</button>
+
+                    <div id="educationForm" class="mt-2 d-none">
+                        <form method="post" action="@Url.Action("AddEducationDetails","JobSeeker")">
+                            <input type="text" class="form-control mt-2" name="University" placeholder="University Name" required>
+                            <input type="text" class="form-control mt-2" name="Degree" placeholder="Degree" required>
+                            <input type="text" class="form-control mt-2" name="Major" placeholder="Major" required>
+                            <input type="number" class="form-control mt-2" name="GraduationYear" placeholder="Graduation Year" required>
+                            <input type="text" class="form-control mt-2" name="Gpa" placeholder="GPA (Optional)">
+                            <button type="submit" class="btn btn-success mt-2">Save</button>
+                        </form>
+                    </div>
+
+                    @foreach (var detail in Model.EducationDetails)
+                    {
+                        <div class="mt-2">
+                            <div class="card p-2">
+                                <div class="d-flex justify-content-between">
+                                    <h5>@detail.University</h5>
+                                    <div>
+                                        <a href="UpdateEducationDetails/@detail.EducationId" class="text-secondary"><i class="fa fa-edit"></i></a>
+                                        <a href="DeleteEducationDetails/@detail.EducationId" class="text-danger"><i class="fa fa-times"></i></a>
+                                    </div>
+                                </div>
+                                <p>@detail.Major - @detail.Degree</p>
+                                <p>GPA: @detail.Gpa</p>
+                                <p>Year of Graduation: @detail.GraduationYear</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-md-4">
+                <!-- Skills -->
+                <div class="card p-3 shadow-sm">
+                    <h4><i class="fas fa-tools"></i> Skills</h4>
+                    <a title="Add skill" id="showAddSkill"><i class="fa fa-plus"></i></a>
+                    <div class="row mt-2">
+                        <div class="d-flex flex-wrap">
+                            @foreach (var skill in Model.Skills)
+                            {
+                                <div class="badge bg-secondary m-1">
+                                    @skill.SkillName
+                                    <a href="DeleteJobSeekerSkill/@skill.JobSeekerSkillId"><i class="fa fa-times text-danger"></i></a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div id="skillForm" class="d-none">
+                        <form method="post" action="@Url.Action("AddSkill","JobSeeker")">
+                            <select id="skills" name="SkillId" multiple="multiple" class="form-control select2">
+                                @foreach (var skill in Model.AllSkills)
+                                {
+                                    <option value="@skill.SkillId">@skill.SkillName</option>
+                                }
+                            </select>
+                            <input type="submit" value="Submit" class="btn btn-primary mt-2" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    @*<footer class="py-4 bg-dark text-white" style="bottom:0px; width:100%; position:absolute;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mb-4 mb-md-0">
+                        <h5 class="mb-3">Job Finder</h5>
+                        <p>Find your dream job or the perfect candidate with our comprehensive job portal.</p>
+                        <div class="social-links">
+                            <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-white me-2"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <h5 class="mb-3">Contact</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-map-marker-alt me-2"></i>Bukasa Kirinya</li>
+                            <li><i class="fas fa-phone me-2"></i> 0701023913</li>
+                            <li><i class="fas fa-envelope me-2"></i> info@jobfinder.com</li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start">
+                        <p class="mb-0">&copy; <?= date('Y') ?> Job Finder. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item"><a href="terms.php" class="text-white text-decoration-none">Terms of Service</a></li>
+                            <li class="list-inline-item"><a href="privacy.php" class="text-white text-decoration-none">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>*@
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../assets/js/main.js"></script>
+    <!-- Scripts -->
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="~/js/main.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- jQuery & Select2 -->
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="~/Scripts/MyScripts/select2.min.js"></script>
+
+    <script>
+        $("#showEducationForm").click(function () { $("#educationForm").toggleClass("d-none"); });
+        $("#showAddSkill").click(function () { $("#skillForm").toggleClass("d-none"); });
+
+        $(document).ready(function () {
+            $('#skills').select2();
+        });
+    </script>
+
+    <!-- Custom Styles -->
+    <style>
+        /* Profile Header */
+        .profile-header {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .profile-pic {
+            width: 120px; /* Reduced from 200px */
+            height: 120px; /* Reduced from 200px */
+            border: 4px solid #007bff;
+        }
+
+        /* Skills */
+        .badge {
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 12px;
+        }
+
+        /* Dark Mode Support */
+        .dark-mode .profile-header {
+            background: #222;
+            color: white;
+        }
+    </style>
+</body>
+</html>

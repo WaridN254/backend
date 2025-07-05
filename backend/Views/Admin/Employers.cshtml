@@ -1,0 +1,113 @@
+﻿@model IEnumerable<backend.Models.EmployerModel>
+
+@{
+    ViewBag.Title = "Employers Management";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<div class="container-fluid mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5><i class="fas fa-users"></i> View Employers</h5>
+          
+        </div>
+
+        <div class="card-body">
+            <!-- Search & Filters -->
+            <div class="row mb-3">
+                <div class="col-lg-6 col-md-12 mb-2">
+                    <div class="input-group">
+                        <input type="text" id="search" class="form-control" placeholder="Search employers...">
+                        <button id="searchButton" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 text-lg-end text-md-start">
+                    <button class="btn btn-secondary" id="filterApproved"><i class="fas fa-check-circle"></i> Approved</button>
+                    <button class="btn btn-warning text-dark" id="filterPending"><i class="fas fa-hourglass-half"></i> Pending</button>
+                    <button class="btn btn-danger" id="filterRejected"><i class="fas fa-times-circle"></i> Rejected</button>
+                </div>
+            </div>
+
+            <!-- Employers Grid -->
+            <div class="row">
+                @foreach (var item in Model.OrderByDescending(emp => emp.Status == "Approved"))
+                {
+                    <div class="col-lg-4 col-md-6 mb-4 employer-card" data-status="@item.Status.ToLower()">
+                        <div class="card employer-card shadow-sm">
+                            <div class="card-body text-center">
+                                <img src="data:image/png;base64,@Convert.ToBase64String(item.CompanyLogo)" class="rounded-circle mb-2" width="80" height="80">
+                                <h6 class="fw-bold mb-0">@item.CompanyName</h6>
+                                <small class="text-muted">@item.OfficialEmail</small>
+                                <hr>
+                                <p><i class="fas fa-user-tie"></i> @item.Name - @item.Designation</p>
+                                <p><i class="fas fa-envelope"></i> @item.Email</p>
+                                <p><i class="fas fa-phone"></i> @item.ContactPhone</p>
+                                <span class="badge @(item.Status == "Approved" ? "bg-success" : item.Status == "Pending" ? "bg-warning text-dark" : "bg-danger")">
+                                    @item.Status
+                                </span>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between">
+                                <a href="@Url.Action("EmployerApprove", new { id = item.EmployerID })" class="btn btn-outline-success btn-sm">
+                                    <i class="fas fa-check"></i> Approve
+                                </a>
+                                <a href="@Url.Action("EmployerReject", new { id = item.EmployerID })" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-times"></i> Reject
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Search Functionality
+        $("#searchButton").click(function () {
+            var searchText = $("#search").val().toLowerCase();
+            $(".employer-card").each(function () {
+                var companyName = $(this).find("h6").text().toLowerCase();
+                $(this).toggle(companyName.includes(searchText));
+            });
+        });
+
+        // Filter Buttons
+        $("#filterApproved").click(function () {
+            $(".employer-card").hide();
+            $(".employer-card[data-status='approved']").show();
+        });
+
+        $("#filterPending").click(function () {
+            $(".employer-card").hide();
+            $(".employer-card[data-status='pending']").show();
+        });
+
+        $("#filterRejected").click(function () {
+            $(".employer-card").hide();
+            $(".employer-card[data-status='rejected']").show();
+        });
+    });
+</script>
+
+<!-- Custom Styles -->
+<style>
+    .employer-card {
+        transition: 0.3s ease-in-out;
+    }
+
+        .employer-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+    .card-footer {
+        background: #f8f9fa;
+    }
+</style>

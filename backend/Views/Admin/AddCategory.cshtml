@@ -1,0 +1,155 @@
+﻿@model IEnumerable<backend.Models.JobDetails>
+
+@{
+    ViewBag.Title = "Admin Dashboard";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar occupies fixed space, content expands fully -->
+        <div class="col-md-12">
+            <h3 class="mb-4"><i class="fas fa-tachometer-alt"></i> Welcome, @Session["Admin"]</h3>
+
+            <!-- Admin Dashboard Cards -->
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <a href="@Url.Action("Skills","Admin")" class="card dashboard-card shadow-sm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-cogs fa-4x text-primary"></i>
+                            <h5 class="mt-2">Manage Skills</h5>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <a href="@Url.Action("Categories","Admin")" class="card dashboard-card shadow-sm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-folder-open fa-4x text-warning"></i>
+                            <h5 class="mt-2">Job Categories</h5>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <a href="@Url.Action("VerifyEmployer","Admin")" class="card dashboard-card shadow-sm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-check-circle fa-4x text-success"></i>
+                            <h5 class="mt-2">Verify Employers</h5>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <a href="@Url.Action("ContactMessages","Admin")" class="card dashboard-card shadow-sm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-envelope fa-4x text-danger"></i>
+                            <h5 class="mt-2">Messages</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Trending Jobs Section -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-primary text-white">
+                    <h5><i class="fas fa-fire"></i> Trending Jobs</h5>
+                </div>
+                <div class="card-body">
+                    @if (!Model.Any(job => job.IsPublished && job.ApplicationDeadline >= DateTime.Now))
+                    {
+                        <p class="text-center text-muted">No trending jobs at the moment.</p>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            @foreach (var item in Model.OrderByDescending(j => j.NumberOfViews).ThenByDescending(j => j.JobID).Take(3))
+                            {
+                                if (item.IsPublished && item.ApplicationDeadline >= DateTime.Now)
+                                {
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                                        <div class="card trending-job-card p-3 shadow-sm">
+                                            <div class="d-flex align-items-center">
+                                                <img alt="Company Logo" src="data:image/png;base64,@Convert.ToBase64String(item.CompanyLogo)" class="rounded-circle" width="70" height="70">
+                                                <div class="ms-3">
+                                                    <h6 class="fw-bold">@item.JobTitle</h6>
+                                                    <p class="text-muted mb-1">
+                                                        <i class="fas fa-eye"></i> @item.NumberOfViews views &bull;
+                                                        <i class="fas fa-users"></i> @item.NumberOfApplications applications
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="text-end mt-2">
+                                                <a href="@Url.Action("JobDetails", new { id = item.JobID })" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-info-circle"></i> View Details
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    /* Container Adjustments */
+    .container-fluid {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    /* Dashboard Cards */
+    .dashboard-card {
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease-in-out;
+        border: none;
+        border-radius: 12px;
+    }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+    /* Trending Jobs Styling */
+    .trending-job-card {
+        border-left: 5px solid #007bff;
+        transition: all 0.3s ease-in-out;
+        border-radius: 8px;
+    }
+
+        .trending-job-card:hover {
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+    /* Dark Mode Support */
+    .dark-mode .dashboard-card {
+        background: #222;
+        color: white;
+    }
+
+    .dark-mode .card {
+        background: #333;
+        color: white;
+    }
+
+    .dark-mode .btn-outline-primary {
+        border-color: white;
+        color: white;
+    }
+
+        .dark-mode .btn-outline-primary:hover {
+            background: white;
+            color: #007bff;
+        }
+</style>

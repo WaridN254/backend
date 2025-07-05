@@ -1,0 +1,112 @@
+﻿@model IEnumerable<backend.Models.JobDetails>
+
+@{
+    ViewBag.Title = "Jobs Management";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    var categories = Model.Select(job => new { CategoryName = job.CategoryName, CategoryId = job.CategoryID }).Distinct().ToList();
+}
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<div class="container-fluid mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5><i class="fas fa-briefcase"></i> View Job Listings</h5>
+           
+        </div>
+        <div class="card-body">
+            <!-- Search & Filters -->
+            <div class="row mb-3">
+                <div class="col-lg-6 col-md-12 mb-2">
+                    <div class="input-group">
+                        <input type="text" id="searchString" class="form-control" placeholder="Search jobs...">
+                        <button id="searchButton" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 text-lg-end text-md-start">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-filter"></i> Filter by Category
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="@Url.Action("Jobs", "Admin")">All Categories</a></li>
+                            @foreach (var cat in categories)
+                            {
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Jobs", "Admin", new { search = cat.CategoryName })">
+                                        @cat.CategoryName
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Listings -->
+            <div class="row">
+                @foreach (var item in Model)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card job-card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <img src="data:image/png;base64,@Convert.ToBase64String(item.CompanyLogo)" class="rounded-circle me-3" width="50" height="50">
+                                    <div>
+                                        <h6 class="fw-bold mb-0">@item.JobTitle</h6>
+                                        <small class="text-muted">@item.CompanyName</small>
+                                    </div>
+                                </div>
+                                <hr>
+                                <p class="text-muted"><i class="fas fa-map-marker-alt"></i> @item.Location</p>
+                                <p class="text-muted"><i class="fas fa-money-bill-wave"></i> $@item.Salary</p>
+                                <p class="text-muted"><i class="fas fa-calendar-alt"></i> Deadline: @item.ApplicationDeadline.ToString("yyyy-MM-dd")</p>
+                                <span class="badge @(item.IsPublished ? "bg-success" : "bg-warning text-dark")">
+                                    @(item.IsPublished ? "Published" : "Draft")
+                                </span>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between">
+                                <a href="@Url.Action("JobDetails", new { id = item.JobID })" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </a>
+                              
+                                
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#searchButton").click(function () {
+            var searchString = $("#searchString").val().toLowerCase();
+            $(".job-card").each(function () {
+                var jobText = $(this).text().toLowerCase();
+                $(this).closest(".col-lg-4").toggle(jobText.includes(searchString));
+            });
+        });
+    });
+</script>
+
+<!-- Custom Styles -->
+<style>
+    .job-card {
+        transition: 0.3s ease-in-out;
+    }
+
+        .job-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+    .card-footer {
+        background: #f8f9fa;
+    }
+</style>

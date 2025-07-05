@@ -1,0 +1,24 @@
+-----------Exception Details on  09/06/2025 08:07:36-----------------
+-------------------------------------------------------------------------------------
+
+
+
+Log Written Date: 09/06/2025 08:07:36
+
+Error Line No : line 42
+
+Error Message: SqlTypeException
+
+Exception Type: System.Data.SqlTypes.SqlTypeException
+
+Error Location : SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM.
+
+ Error Page Url: https://localhost:44331/Employer/AddJobVacancy
+
+User Host IP: 
+
+
+--------------------------------*End*------------------------------------------
+
+
+

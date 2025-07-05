@@ -1,0 +1,245 @@
+﻿@model backend.Models.EmployerModel
+
+@{
+    ViewBag.Title = "Update Profile";
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Job Finder</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="position: fixed; top: 0; width: 100%; z-index: 1000;">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", "Employer")">
+                <i class="fas fa-briefcase me-2"></i>Job Finder
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Vacancies", "Employer")">Browse Jobs</a>
+                    </li>
+
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+
+                            <li><span class="dropdown-item text-muted">No notifications</span></li>
+
+                            <li>
+                                <a class="dropdown-item" href="">
+                                    <small class="text-muted"></small>
+
+                                </a>
+                            </li>
+
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-center" href="/">View All</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+
+                            <li><a class="dropdown-item" href="@Url.Action("ViewProfile", "Employer")"><i class="fas fa-user me-2"></i>Company Profile</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("ChatList", "Employer")"><i class="fas fa-envelope me-2"></i>Messages</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("Vacancies", "Employer")"><i class="fas fa-list me-2"></i>Posted Jobs</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("AddJobVacancy", "Employer")"><i class="fas fa-plus me-2"></i>Add Jobs</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "Employer")"><i class="fas fa-cog me-2"></i>Account Settings</a></li>
+                            <li><a class="dropdown-item" id="Logoutbtn" href="@Url.Action("Logout", "Employer")"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <p>.</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+    <!-- Page Content -->
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <!-- Your employer dashboard content goes here -->
+        <div class="container mt-5">
+            <div class="card shadow-sm">
+                <div class="card-header ">
+
+                </div>
+
+                <div class="card-body">
+                    <form action="@Url.Action("UpdateProfile", "Employer")" method="post" enctype="multipart/form-data" onsubmit="return validateEmployerUpdateForm();">
+
+                        <!-- Company Details -->
+                        <div class="mb-4">
+                            <h5><i class="fas fa-building"></i> Company Information</h5>
+                            <div class="form-group mt-2">
+                                <label for="CompanyName">Company Name</label>
+                                <input type="text" name="CompanyName" id="companyname" class="form-control" placeholder="Company name" value="@Model.CompanyName" onblur="validateCompanyName(this)">
+                                <span id="error-companyname" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <label for="OfficialEmail">Official Email</label>
+                                <input type="text" name="OfficialEmail" id="officialemail" class="form-control" placeholder="Official email" value="@Model.OfficialEmail" onblur="validateOfficialEmail(this)">
+                                <span id="error-officialemail" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <label for="Website">Website</label>
+                                <input type="text" name="Website" id="Website" class="form-control" placeholder="Website URL" value="@Model.Website" onblur="validateWebsite(this)">
+                                <span id="error-Website" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <!-- Employer Details -->
+                        <div class="mb-4">
+                            <h5><i class="fas fa-user"></i> Employer Contact</h5>
+
+                            <div class="form-group mt-2">
+                                <label for="Name">Full Name</label>
+                                <input type="text" name="Name" id="Name" class="form-control" placeholder="Full name" value="@Model.Name" onblur="validateName(this)">
+                                <span id="error-Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <label for="Designation">Designation</label>
+                                <input type="text" name="Designation" id="Designation" class="form-control" placeholder="Job Title / Position" value="@Model.Designation" onblur="validateDesignation(this)">
+                                <span id="error-Designation" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <label for="Email">Contact Email</label>
+                                <input type="email" name="Email" id="Email" class="form-control" placeholder="Personal Email" value="@Model.Email" onblur="validateEmail(this)">
+                                <span id="error-email" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <label for="ContactPhone">Phone Number</label>
+                                <input type="text" name="ContactPhone" id="ContactPhone" class="form-control" placeholder="Contact phone" value="@Model.ContactPhone" onblur="validatePhone(this)">
+                                <span id="error-phone" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Logo Upload -->
+                        <div class="form-group mb-4">
+                            <label for="logoUpload"><i class="fas fa-image"></i> Company Logo</label>
+                            <input type="file" name="uploadedLogo" id="logoUpload" class="form-control" accept=".png, .jpg" onchange="validateLogoUpload(this)">
+                            <span id="error-logoUpload" class="text-danger"></span>
+                        </div>
+
+                        <div class="text-center">
+                            <input type="submit" value="Update Profile" class="btn btn-success px-4" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>.</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <!-- Footer -->
+    <footer class="py-4 bg-dark text-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="mb-3">Job Finder</h5>
+                    <p>Find your dream job or the perfect candidate with our comprehensive job portal.</p>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+
+                <div class="col-md-2">
+                    <h5 class="mb-3">Contact</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i>Bukasa Kirinya</li>
+                        <li><i class="fas fa-phone me-2"></i> 0701023913</li>
+                        <li><i class="fas fa-envelope me-2"></i> info@jobfinder.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; <?= date('Y') ?> Job Finder. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item"><a href="terms.php" class="text-white text-decoration-none">Terms of Service</a></li>
+                        <li class="list-inline-item"><a href="privacy.php" class="text-white text-decoration-none">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Scripts -->
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="~/js/main.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Message Modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalLabel">Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <textarea class="form-control" rows="4" placeholder="Type your message..."></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/MyScripts/main.js"></script>
+    <script>
+        // Toggle Sidebar on small screens
+        document.getElementById("toggleSidebar")?.addEventListener("click", function () {
+            document.querySelector(".sidebar")?.classList.toggle("active");
+        });
+    </script>
+</body>
+</html>
+

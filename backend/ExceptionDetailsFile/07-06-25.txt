@@ -1,0 +1,25 @@
+-----------Exception Details on  07/06/2025 12:30:44-----------------
+-------------------------------------------------------------------------------------
+
+
+
+Log Written Date: 07/06/2025 12:30:44
+
+Error Line No : ine 507
+
+Error Message: SqlException
+
+Exception Type: System.Data.SqlClient.SqlException
+
+Error Location : The INSERT statement conflicted with the FOREIGN KEY constraint "FK__JobApplic__Seeke__6E01572D". The conflict occurred in database "JobPortal", table "dbo.JobSeekers", column 'SeekerID'.
+The statement has been terminated.
+
+ Error Page Url: https://localhost:44331/JobSeeker/ApplyJob/11
+
+User Host IP: 
+
+
+--------------------------------*End*------------------------------------------
+
+
+

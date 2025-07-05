@@ -1,0 +1,96 @@
+-----------Exception Details on  01/07/2025 04:18:02-----------------
+-------------------------------------------------------------------------------------
+
+
+
+Log Written Date: 01/07/2025 04:18:02
+
+Error Line No : ine 205
+
+Error Message: SqlException
+
+Exception Type: System.Data.SqlClient.SqlException
+
+Error Location : Invalid column name 'Name'.
+
+ Error Page Url: https://localhost:44331/Employer/ApplicationApprove/6025?aid=3014
+
+User Host IP: 
+
+
+--------------------------------*End*------------------------------------------
+
+
+
+-----------Exception Details on  01/07/2025 04:18:09-----------------
+-------------------------------------------------------------------------------------
+
+
+
+Log Written Date: 01/07/2025 04:18:09
+
+Error Line No : ine 205
+
+Error Message: SqlException
+
+Exception Type: System.Data.SqlClient.SqlException
+
+Error Location : Invalid column name 'Name'.
+
+ Error Page Url: https://localhost:44331/Employer/ApplicationApprove/6025?aid=3014
+
+User Host IP: 
+
+
+--------------------------------*End*------------------------------------------
+
+
+
+-----------Exception Details on  01/07/2025 04:18:12-----------------
+-------------------------------------------------------------------------------------
+
+
+
+Log Written Date: 01/07/2025 04:18:12
+
+Error Line No : ine 239
+
+Error Message: SqlException
+
+Exception Type: System.Data.SqlClient.SqlException
+
+Error Location : Invalid column name 'Name'.
+
+ Error Page Url: https://localhost:44331/Employer/ApplicationReject/6025?aid=3014
+
+User Host IP: 
+
+
+--------------------------------*End*------------------------------------------
+
+
+
+-----------Exception Details on  01/07/2025 04:21:07-----------------
+-------------------------------------------------------------------------------------
+
+
+
+Log Written Date: 01/07/2025 04:21:07
+
+Error Line No : ine 205
+
+Error Message: SqlException
+
+Exception Type: System.Data.SqlClient.SqlException
+
+Error Location : Invalid column name 'Name'.
+
+ Error Page Url: https://localhost:44331/Employer/ApplicationApprove/6025?aid=3014
+
+User Host IP: 
+
+
+--------------------------------*End*------------------------------------------
+
+
+
